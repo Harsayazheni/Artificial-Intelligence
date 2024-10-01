@@ -14,20 +14,33 @@ Write a Prolog program to build a computer maintenance expert system.
 8. Find the fault of computer by passing query to system.
      
 ### Program:
-
-
-
-
-
-
-
-
-
-
-
+```
+fault(printer_head) :-
+ problem(not_printing),
+ problem(missing_dots),
+ problem(nonuniform_printing).
+fault(ribbon) :-
+ problem(not_printing),
+ problem(missing_dots),
+ problem(spread_ink).
+fault(paper) :-
+ problem(not_printing),
+ problem(paper_jam),
+ problem(out_of_paper).
+fault(motherboard) :-
+ problem(long_beep),
+ problem(short_beep).
+fault(hard_disc) :-
+ problem(two_short_beeps),
+ problem(blank_display).
+problem(not_printing).
+problem(missing_dots).
+problem(spread_ink).
+problem(two_short_beeps).
+problem(blank_display).
+```
 ### Output:
-
-
+![image](https://github.com/user-attachments/assets/73c3658c-7508-4cce-b595-32cc84d27791)
 
 ### Result:
 Thus the simple omputer maintenance expert system was built sucessfully.
