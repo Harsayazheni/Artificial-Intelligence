@@ -48,6 +48,7 @@ app.launch(share=True)
 
 ### Output:
 https://57ad29b8f77718810e.gradio.live/
+![Screenshot 2024-10-09 091826](https://github.com/user-attachments/assets/ff58f015-1013-4992-91c3-c51405b9b876)
 
 
 ### Result:
