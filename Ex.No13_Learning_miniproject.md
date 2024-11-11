@@ -4,11 +4,17 @@
 ### AIM: 
 To write a program to train the classifier for User Behaviour Dataset.
 ###  Algorithm:
+
 1.Load Data: Import the dataset and examine columns for preprocessing.
+
 2.Data Preprocessing: Encode categorical features and handle missing values using median imputation.
+
 3.Feature Scaling: Split the data into training and test sets, then scale features for consistency.
+
 4.Train Classifier: Initialize and train an MLPClassifier on the scaled training data.
+
 5.Evaluate Model: Measure the model's accuracy on both training and test sets to validate performance.
+
 6.Deploy with Gradio: Create a Gradio interface to input user data, process it, and display predictions.
 ### Program:
 ```
