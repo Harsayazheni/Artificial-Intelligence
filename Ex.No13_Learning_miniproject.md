@@ -2,53 +2,89 @@
 ### DATE:                                                                            
 ### REGISTER NUMBER : 212222040052
 ### AIM: 
-To write a program to train the classifier for -----------------.
+To write a program to train the classifier for User Behaviour Dataset.
 ###  Algorithm:
-
+1.Load Data: Import the dataset and examine columns for preprocessing.
+2.Data Preprocessing: Encode categorical features and handle missing values using median imputation.
+3.Feature Scaling: Split the data into training and test sets, then scale features for consistency.
+4.Train Classifier: Initialize and train an MLPClassifier on the scaled training data.
+5.Evaluate Model: Measure the model's accuracy on both training and test sets to validate performance.
+6.Deploy with Gradio: Create a Gradio interface to input user data, process it, and display predictions.
 ### Program:
 ```
 from google.colab import drive
 drive.mount('/content/gdrive')
-#import packages
+
+# Import necessary packages
 import numpy as np
 import pandas as pd
-pip install gradio
 import gradio as gr
-import pandas as pd
-cd /content/gdrive/MyDrive/demo/gradio_project-main
-data = pd.read_csv('diabetes.csv')
-data.head()
-print(data.columns)
-x = data.drop(['Outcome'], axis=1)
-y = data['Outcome']
-print(x[:5])
 from sklearn.model_selection import train_test_split
-x_train, x_test, y_train, y_test= train_test_split(x,y)
 from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.impute import SimpleImputer
+
+# Load the dataset
+data_path = '/content/gdrive/MyDrive/demo/gradio_project-main/user_behavior.csv'
+data = pd.read_csv(data_path)
+data.head()
+
+# Display columns for reference
+print(data.columns)
+
+# Preprocess categorical columns
+# Convert 'Gender' to numerical values ('Male' as 1 and 'Female' as 0)
+data['Gender'] = data['Gender'].map({'Male': 1, 'Female': 0})
+
+# Define features and target
+x = data.drop(['User ID', 'Device Model', 'Operating System', 'User Behavior Class'], axis=1)
+y = data['User Behavior Class']
+
+# Handle missing values by replacing them with the median
+imputer = SimpleImputer(strategy='median')
+x_imputed = imputer.fit_transform(x)
+
+# Split the data into training and testing sets
+x_train, x_test, y_train, y_test = train_test_split(x_imputed, y, test_size=0.2, random_state=42)
+
+# Scale the data
 scaler = StandardScaler()
 x_train_scaled = scaler.fit_transform(x_train)
-x_test_scaled = scaler.fit_transform(x_test)
-from sklearn.neural_network import MLPClassifier
+x_test_scaled = scaler.transform(x_test)
+
+# Define and train the model
 model = MLPClassifier(max_iter=1000, alpha=1)
-model.fit(x_train, y_train)
-print("Model Accuracy on training set:", model.score(x_train, y_train))
-print("Model Accuracy on Test Set:", model.score(x_test, y_test))
-print(data.columns)
-def diabetes(Pregnancies, Glucose, Blood_Pressure, SkinThickness, Insulin, BMI,Diabetes_Pedigree, Age):
-    x = np.array([Pregnancies,Glucose,Blood_Pressure,SkinThickness,Insulin,BMI,Diabetes_Pedigree,Age])
-    prediction = model.predict(x.reshape(1, -1))
-    if(prediction==0):
-      return "NO"
-    else:
-      return "YES"
-outputs = gr.Textbox()
-app = gr.Interface(fn=diabetes, inputs=['number','number','number','number','number','number','number','number'], outputs=outputs,description="Detection of Diabeties")
+model.fit(x_train_scaled, y_train)
+
+# Print model accuracy
+print("Model Accuracy on training set:", model.score(x_train_scaled, y_train))
+print("Model Accuracy on test set:", model.score(x_test_scaled, y_test))
+
+# Define the prediction function
+def predict_user_behavior(app_usage_time, screen_on_time, battery_drain, num_apps_installed, data_usage, age, gender):
+    gender_encoded = 1 if gender.lower() == 'male' else 0
+    input_data = np.array([app_usage_time, screen_on_time, battery_drain, num_apps_installed, data_usage, age, gender_encoded])
+    input_scaled = scaler.transform([input_data])
+    prediction = model.predict(input_scaled)
+    return prediction[0]
+
+# Set up Gradio interface
+app = gr.Interface(
+    fn=predict_user_behavior,
+    inputs=['number', 'number', 'number', 'number', 'number', 'number', gr.Radio(["Male", "Female"])],
+    outputs='text',
+    description="User Behavior Classification"
+)
+
+# Launch the Gradio app
 app.launch(share=True)
+
 ```
 
 ### Output:
-https://57ad29b8f77718810e.gradio.live/
-![Screenshot 2024-10-09 091826](https://github.com/user-attachments/assets/ff58f015-1013-4992-91c3-c51405b9b876)
+[https://57ad29b8f77718810e.gradio.live/](https://5ec1a5d86cc421c4ee.gradio.live/)
+![image](https://github.com/user-attachments/assets/fc3f8493-bbdd-44e9-8941-3f8ce459f136)
+
 
 
 ### Result:
